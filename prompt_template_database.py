@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, String, Text
+from sqlalchemy import create_engine, MetaData, Column, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import uuid
@@ -11,11 +11,13 @@ class PromptTemplate(Base):
     __tablename__ = 'prompt_templates'
 
     id = Column(String, primary_key=True)
+    topic = Column(String)
     name = Column(String)
     purpose = Column(String)
     template = Column(Text)
-    def __init__(self, name, purpose, template):
+    def __init__(self, topic, name, purpose, template):
         self.id = str(uuid.uuid4())
+        self.topic = topic
         self.name = name
         self.purpose = purpose
         self.template = template

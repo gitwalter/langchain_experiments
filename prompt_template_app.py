@@ -28,28 +28,34 @@ def main():
             selected_template = None
             st.empty()
             name = st.text_input('Name')
+            topic = st.text_input('Topic')
             purpose = st.text_area('Purpose')
             template = st.text_area('Template', height=None)  # Make the text area expand vertically
             if st.button('Save New Template'):
+                if not topic:
+                    st.error('Please enter a topic for the template!')
                 if not name:
                     st.error('Please enter a name for the template!')
                 else:
                     if name in template_names[1:]:
                         st.error('A template with this name already exists!')
                     else:
-                        new_template = PromptTemplate(name=name, purpose=purpose, template=template)
+                        new_template = PromptTemplate(topic=topic, name=name, purpose=purpose, template=template)
                         session.add(new_template)
                         session.commit()
                         st.success('Template saved successfully!')
         else:
             selected_template = session.query(PromptTemplate).filter_by(name=selected_template_name).first()
             if selected_template:
+                topic = st.text_input('Topic', value=selected_template.topic)
                 name = st.text_input('Name', value=selected_template.name)
                 purpose = st.text_area('Purpose', value=selected_template.purpose)
                 template = st.text_area('Template', value=selected_template.template, height=None)  # Make the text area expand vertically
                 col1, col2 = st.columns(2)
                 with col1:
                     if st.button('Save', key="save_button"):
+                        if not topic:
+                            st.error('Please enter a topic for the template!')
                         if not name:
                             st.error('Please enter a name for the template!')
                         else:
@@ -77,6 +83,7 @@ def main():
         selected_template = session.query(PromptTemplate).filter_by(name=selected_template_name).first()
 
         if selected_template:
+            st.write(f"Topic: {selected_template.topic}")
             st.write(f"Name: {selected_template.name}")
             st.write(f"Purpose: {selected_template.purpose}")
             st.write(f"Template: {selected_template.template}")
