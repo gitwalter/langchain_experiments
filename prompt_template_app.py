@@ -34,7 +34,7 @@ def main():
     st.sidebar.title("Select Action")
 
     action = st.sidebar.radio(
-        "Action", ["Display Editable Template", "Load and Display Template", "Prompting Principles"]
+        "Action", ["Edit Template", "Use Template", "Prompting Principles"]
     )
 
     if action == "Prompting Principles":
@@ -163,7 +163,7 @@ def main():
                 ''')
         
 
-    if action == "Display Editable Template":
+    if action == "Edit Template":
         st.sidebar.title("Select Prompt Template")
         
         templates = get_templates()
@@ -234,7 +234,7 @@ def main():
                             session.delete(selected_template)
                             session.commit()
                             st.success("Template deleted successfully!")
-    elif action == "Load and Display Template":
+    elif action == "Use Template":
         st.sidebar.title("Select Prompt Template")
         templates = get_templates()
         template_names = [template.name for template in templates]
