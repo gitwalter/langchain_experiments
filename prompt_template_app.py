@@ -165,7 +165,7 @@ def main():
             topic = st.text_input("Topic")
             purpose = st.text_area("Purpose")
             template = st.text_area(
-                "Template", height=None
+                "Template", height=250
             )  # Make the text area expand vertically
             if st.button("Save New Template"):
                 if not topic:
@@ -193,7 +193,7 @@ def main():
                 name = st.text_input("Name", value=selected_template.name)
                 purpose = st.text_area("Purpose", value=selected_template.purpose)
                 template = st.text_area(
-                    "Template", value=selected_template.template, height=None
+                    "Template", value=selected_template.template, height=400
                 )  # Make the text area expand vertically
                 col1, col2 = st.columns(2)
                 with col1:
@@ -258,7 +258,7 @@ def main():
                     input_values[var_name] = var_value
                 prompt = ChatPromptTemplate.from_template(selected_template.template)
                 formatted_messages = prompt.format_messages(**input_values)
-                st.text_area(label="Prompt", value=formatted_messages)
+                st.text_area(label="Prompt", value=formatted_messages,height=500)
 
 
 if __name__ == "__main__":
