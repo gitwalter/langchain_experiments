@@ -2,6 +2,7 @@ import streamlit as st
 from prompt_template_database import session, PromptTemplate
 from text_definitions import prompting_principles
 from langchain.prompts import ChatPromptTemplate
+from sqlalchemy import asc
 
 # Function to create Streamlit input fields for string variables
 def create_input_fields(variables):
@@ -14,17 +15,20 @@ def create_input_fields(variables):
 
 # retrieve templates by topic from db
 def get_templates():
-    topics = [
-        result[0] for result in session.query(PromptTemplate.topic).distinct()
-    ]
+   
+    topics = [result[0] for result in session.query(PromptTemplate.topic).distinct().order_by(asc(PromptTemplate.topic))]
+
+    # topics = [
+    #     result[0] for result in session.query(PromptTemplate.topic).distinct()
+    # ]
     selected_topic = st.sidebar.selectbox(
         "Select Topic", ["All"] + topics
     )  # Add dropdown for selecting topic
     if selected_topic == "All":
-        templates = session.query(PromptTemplate).all()
+        templates = session.query(PromptTemplate).order_by(asc(PromptTemplate.name)).all()
     else:
         templates = (
-            session.query(PromptTemplate).filter_by(topic=selected_topic).all()
+            session.query(PromptTemplate).filter_by(topic=selected_topic).order_by(asc(PromptTemplate.name)).all()
         )
     return templates
 
