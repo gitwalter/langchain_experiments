@@ -15,21 +15,15 @@ def create_input_fields(variables):
 
 # retrieve templates by topic from db
 def get_templates():
-   
-    topics = [result[0] for result in session.query(PromptTemplate.topic).distinct().order_by(asc(PromptTemplate.topic))]
-
-    # topics = [
-    #     result[0] for result in session.query(PromptTemplate.topic).distinct()
-    # ]
+    topics = PromptTemplate.get_topics(session)
     selected_topic = st.sidebar.selectbox(
         "Select Topic", ["All"] + topics
-    )  # Add dropdown for selecting topic
+)  # Add dropdown for selecting topic
     if selected_topic == "All":
-        templates = session.query(PromptTemplate).order_by(asc(PromptTemplate.name)).all()
+        templates = PromptTemplate.get_all_templates(session)
     else:
-        templates = (
-            session.query(PromptTemplate).filter_by(topic=selected_topic).order_by(asc(PromptTemplate.name)).all()
-        )
+        templates= PromptTemplate.get_templates_by_topic(session,selected_topic)
+        
     return templates
 
 
@@ -79,11 +73,7 @@ def main():
                         session.commit()
                         st.success("Template saved successfully!")
         else:
-            selected_template = (
-                session.query(PromptTemplate)
-                .filter_by(name=selected_template_name)
-                .first()
-            )
+            selected_template = PromptTemplate.get_by_name(session,selected_template_name)
             if selected_template:
                 topic = st.text_input("Topic", value=selected_template.topic)
                 name = st.text_input("Name", value=selected_template.name)
@@ -123,9 +113,7 @@ def main():
 
         selected_template_name = st.sidebar.selectbox("Template", template_names)
 
-        selected_template = (
-            session.query(PromptTemplate).filter_by(name=selected_template_name).first()
-        )
+        selected_template = PromptTemplate.get_by_name(session,selected_template_name)        
 
         if selected_template:
             st.write(f"Topic: {selected_template.topic}")
